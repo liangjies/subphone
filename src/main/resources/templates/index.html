@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.icewx.com/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+</head>
+<script src="https://cdn.icewx.com/jquery/jquery-3.4.1.min.js"></script>
+<script>
+    function guid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
+    }
+    var uid = guid();
+    $(document).ready(function(){
+        $("#submit").click(function(){
+            $.ajax({
+                url:"submit",
+                type:'post',
+                data:$("form").serialize(),
+                dataType:'text',
+                success:function (data) {
+                    if(data=="success"){
+                        document.getElementById('text').value = "";
+                    }
+                }
+            });
+        });
+    });
+
+    var socket;
+    function openSocket() {
+        if(typeof(WebSocket) == "undefined") {
+            console.log("您的浏览器不支持WebSocket");
+        }else{
+            console.log("您的浏览器支持WebSocket");
+            //实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
+            //等同于socket = new WebSocket("ws://localhost:8888/xxxx/im/25");
+            //var socketUrl="${request.contextPath}/im/"+$("#userId").val();
+            var socketUrl="http://192.168.4.61:8080/imserver/"+uid+"";
+            socketUrl=socketUrl.replace("https","ws").replace("http","ws");
+            console.log(socketUrl);
+            if(socket!=null){
+                socket.close();
+                socket=null;
+            }
+            socket = new WebSocket(socketUrl);
+            //打开事件
+            socket.onopen = function() {
+                console.log("websocket已打开");
+                $.ajax({
+                    url: "get",
+                    type: 'post',
+                });
+                //socket.send("这是来自客户端的消息" + location.href + new Date());
+            };
+            //获得消息事件
+            socket.onmessage = function(msg) {
+                console.log(msg.data);
+                //发现消息进入    开始处理前端触发逻辑
+                $('#content').text(msg.data);
+            };
+            //关闭事件
+            socket.onclose = function() {
+                console.log("websocket已关闭");
+            };
+            //发生了错误事件
+            socket.onerror = function() {
+                console.log("websocket发生了错误");
+            }
+        }
+    }
+    openSocket();
+</script>
+<body>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h1 class="text-center">
+<span id="content"><p></p>
+</span></h1>
+
+            <center>
+                <button id="refresh" class="btn btn-info" onclick="openSocket()" type="button">刷新</button>
+                <button id="copyBT" class="btn btn-info" type="button">复制</button>
+
+                <br><br>
+                <form>
+                    <input id="text" type="text" name="text" /><br />
+                    <button id="submit" class="btn btn-info btn-lg" type="button">提交</button>
+                </form>
+            </center>
+            <script>
+                function copyArticle(event) {
+                    const range = document.createRange();
+                    range.selectNode(document.getElementById("content"));
+                    const selection = window.getSelection();
+                    if(selection.rangeCount > 0) selection.removeAllRanges();
+                    selection.addRange(range);
+                    document.execCommand("copy");
+                    //alert("复制成功！");
+                }
+
+                document.getElementById("copyBT").addEventListener("click", copyArticle, false);
+            </script>
+        </div>
+    </div>
+</div>
+</body>
+</html>
