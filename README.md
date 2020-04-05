@@ -1,2 +1,2 @@
-# subphone
+# 文本同步
 subphone
