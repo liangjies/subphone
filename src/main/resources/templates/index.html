@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdn.icewx.com/bootstrap-3.3.7-dist/css/bootstrap.min.css">
 </head>
 <script src="https://cdn.icewx.com/jquery/jquery-3.4.1.min.js"></script>
-<script>
+<script type="text/javascript">
     function guid() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -30,6 +30,7 @@
         });
     });
 
+    var ctxPath  = document.domain;
     var socket;
     function openSocket() {
         if(typeof(WebSocket) == "undefined") {
@@ -39,7 +40,7 @@
             //实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
             //等同于socket = new WebSocket("ws://localhost:8888/xxxx/im/25");
             //var socketUrl="${request.contextPath}/im/"+$("#userId").val();
-            var socketUrl="http://192.168.4.61:8080/imserver/"+uid+"";
+            var socketUrl="wss://"+ctxPath+"/imserver/"+uid+"";
             socketUrl=socketUrl.replace("https","ws").replace("http","ws");
             console.log(socketUrl);
             if(socket!=null){

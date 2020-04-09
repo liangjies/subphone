@@ -3,21 +3,11 @@ package com.liangjies.subphone.config;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.liangjies.subphone.entity.Text;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.annotation.Resource;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -35,7 +25,6 @@ public class WebSocketServer {
     private Session session;
     /**接收userId*/
     private String userId="";
-    /**JDBC**/
 
     /**
      * 连接建立成功调用的方法*/
